@@ -167,9 +167,10 @@ const handlers = {
         var whatsclose_api_endpoint = 'http://api.whatsclose.io:3000/api/concerts';
 
         var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query; 
-        httpGet(full_whatsclose_api_endpoint).then({
+        httpGet(full_whatsclose_api_endpoint).then(function(res) {
             return loadBody(res);
-        }).then(function(dates) {
+        }).then(function(dates_string) {
+            let dates = JSON.parse(dates_string);
             var number_concerts = dates.length;
 
             var say = '';
