@@ -199,7 +199,8 @@ const handlers = {
                 }
 
                 self.response.speak(say);
-                pushCmd.send(dates);
+                console.log(dates);
+                pushCmd.send(dates_string);
                 self.emit(':responseReady');
             }).catch(function (error) {
                 var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
