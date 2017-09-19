@@ -44,7 +44,7 @@ var sendCmd = function (data) {
                 logResult(open_data, error, response, body);
             }
         );
-    }, 7000)
+    }, 9000)
 
     setTimeout(function () {
         request.post({
@@ -56,7 +56,7 @@ var sendCmd = function (data) {
                 logResult(open_data, error, response, body);
             }
         );
-    }, 8000)
+    }, 10000)
 };
 
 module.exports = {
