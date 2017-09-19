@@ -75,6 +75,7 @@ const myAPI = {
 const Alexa = require('alexa-sdk');
 var http = require('http');
 var Q = require('q');
+var geocoder = require('./geocode.js');
 
 exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -137,12 +138,15 @@ const handlers = {
     'BandIntent': function () {
         //-d bandNames="arch%20enemy,tagada%20jones,metallica" -d from="2017-10-01" -d to="2017-12-31" -d location="52.370216052,4.8951680" -d radius="100km"
         const city_name = this.event.request.intent.slots.citylist.value;
-        // know issue: sometimes alexa does not process the value property, the value becomes undefined
+        // known issue: sometimes alexa does not process the value property, the value becomes undefined
+
+        var gps_coordinates = geocode.resolve(city_name);
         var search_object = {
             bandNames: "metallica,tagada%jones,arch%enemy",
             from: "2017-01-01",
             to: "2017-12-31",
-            location: "52.370216052,4.8951680",
+            location: "" + gps_coordinates.lat + "," + gps_coordinates.lon,
+            //location: "52.370216052,4.8951680",
             radius: "1000km"
         };
 
