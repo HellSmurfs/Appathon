@@ -138,6 +138,8 @@ const handlers = {
 
     'BandIntent': function () {
         //-d bandNames="arch%20enemy,tagada%20jones,metallica" -d from="2017-10-01" -d to="2017-12-31" -d location="52.370216052,4.8951680" -d radius="100km"
+        console.log(this.event);
+        console.log(this.event.request);
         const city_name = this.event.request.intent.slots.citylist.value;
         // known issue: sometimes alexa does not process the value property, the value becomes undefined
         if (city_name === undefined) {
@@ -247,6 +249,11 @@ const handlers = {
         this.emit(':responseReady');
     },
 
+    'SmurfIntent': function(){
+        this.response.speak("Ready to smurf it");
+        this.emit(':responseReady');
+        
+    },
     'TeamNameIntent': function () {
         this.emit(':tell', 'Hello This is Ajax!');
     },
