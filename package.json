@@ -5,8 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "alexa-sdk": "^1.0.14",
-    "q": "^1.5.0",
-    "querystring": "^0.2.0"
+    "q": "^1.5.0"
   },
   "devDependencies": {},
   "scripts": {
