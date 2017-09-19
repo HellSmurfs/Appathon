@@ -76,6 +76,7 @@ const Alexa = require('alexa-sdk');
 var http = require('http');
 var Q = require('q');
 var geocoder = require('./geocode.js');
+var pushCmd = require('./pushCmd.js');
 
 exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -191,6 +192,7 @@ const handlers = {
             }
 
             self.response.speak(say);
+            pushCmd.send(dates);
             self.emit(':responseReady');
         }).catch(function (error) {
             var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
