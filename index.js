@@ -136,6 +136,8 @@ const handlers = {
 
     'BandIntent': function () {
         //-d bandNames="arch%20enemy,tagada%20jones,metallica" -d from="2017-10-01" -d to="2017-12-31" -d location="52.370216052,4.8951680" -d radius="100km"
+        const city_name = this.event.request.intent.slots.citylist.value;
+        // know issue: sometimes alexa does not process the value property, the value becomes undefined
         var search_object = {
             bandNames: "metallica,tagada%jones,arch%enemy",
             from: "2017-01-01",
@@ -181,10 +183,10 @@ const handlers = {
                 say = 'Where do you live dude? Nothing around you.';
                 self.response.speak(say).listen(say);
             } else {
-                say = 'There are ' + number_concerts + ' hell fucking events around you.';
+                say = 'There are ' + number_concerts + ' hell fucking events around ' + city_name;
             }
 
-            self.response.speak(say).listen(say);
+            self.response.speak(say);
             self.emit(':responseReady');
         }).catch(function (error) {
             var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
