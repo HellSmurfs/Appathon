@@ -132,6 +132,10 @@ const handlers = {
         this.emit(':responseReady');
     },
 
+    'BandIntent': function () {
+        // do the query here  
+    },
+
     'AMAZON.YesIntent': function () {
         var restaurantName = this.attributes['restaurant'];
         var restaurantDetails = getRestaurantByName(restaurantName);
@@ -170,13 +174,10 @@ const handlers = {
     },
 
     'TeamNameIntent': function () {
-        var restaurant = randomArrayElement(getRestaurantsByMeal('dinner'));
-        this.attributes['restaurant'] = restaurant.name;
-
-        var say = 'Test Team Name, Enjoy dinner at, ' + restaurant.name + '. Would you like to hear more?';
-        this.response.speak(say).listen(say);
-        this.emit(':responseReady');
+        this.emit(':tell', 'Hello This is Ajax!');
     },
+
+    'BandIntent': function () {}
 
     'GoOutIntent': function () {
 
