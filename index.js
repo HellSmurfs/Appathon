@@ -166,26 +166,30 @@ const handlers = {
         var search_query = require('querystring').stringify(search_object);
         var whatsclose_api_endpoint = 'http://api.whatsclose.io:3000/api/concerts';
 
-        var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query; 
-        httpGet(full_whatsclose_api_endpoint).then(function(res) {
+        var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query;
+
+        var self = this;
+
+        httpGet(full_whatsclose_api_endpoint).then(function (res) {
             return loadBody(res);
-        }).then(function(dates_string) {
+        }).then(function (dates_string) {
             var dates = JSON.parse(dates_string);
             var number_concerts = dates.length;
 
             var say = '';
             if (number_concerts == 0) {
                 say = 'Where do you live dude? Nothing around you.';
-                this.response.speak(say).listen(say);
-            }
-            else {
+                self.response.speak(say).listen(say);
+            } else {
                 say = 'There are ' + number_concerts + ' hell fucking events around you.';
             }
 
-            this.response.speak(say).listen(say);
-        }).catch(function(error) {
+            self.response.speak(say).listen(say);
+            self.emit(':responseReady');
+        }).catch(function (error) {
             var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
-            this.response.speak(say).listen(say);
+            self.response.speak(say).listen(say);
+            self.emit(':responseReady');
         });
 
 
