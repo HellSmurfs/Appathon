@@ -1,11 +1,11 @@
 // 1. Text strings =====================================================================================================
 //    Modify these strings and messages to change the behavior of your Lambda function
-
+//    Known issue: the go out intent does not work because of the weather API
 const languageStrings = {
     'en': {
         'translation': {
             'WELCOME': "Welcome to Amsterdam",
-            'HELP': "Say about, to hear more about the city, or say coffee, breakfast, lunch, or dinner, to hear local restaurant suggestions, or say recommend an attraction, or say, go outside. ",
+            'HELP': "Say about, to hear more about the city, or say coffee, breakfast, lunch, or dinner, to hear local restaurant suggestions, or say recommend an attraction.",
             'ABOUT': "Amsterdam is the Netherlands’ capital, known for its artistic heritage, elaborate canal system and narrow houses with gabled facades, legacies of the city’s 17th-century Golden Age. Its Museum District houses the Van Gogh Museum, works by Rembrandt and Vermeer at the Rijksmuseum, and modern art at the Stedelijk. Cycling is key to the city’s character, and there are numerous bike paths.",
             'STOP': "Okay, see you next time, my Lord!"
         }
@@ -18,47 +18,26 @@ const data = {
     "postcode": "1101 BE",
     "restaurants": [
         {
-            "name": "Zeke's Place",
-            "address": "66 East Main Street",
+            "name": "Grand Café 3 and 20",
+            "address": "ArenA Boulevard 242",
             "phone": "978-283-0474",
             "meals": "breakfast, lunch",
             "description": "A cozy and popular spot for breakfast.  Try the blueberry french toast!"
         },
         {
-            "name": "Morning Glory Coffee Shop",
-            "address": "25 Western Avenue",
+            "name": "Burger Bitch",
+            "address": " ArenA Boulevard 79",
             "phone": "978-281-1851",
             "meals": "coffee, breakfast, lunch",
             "description": "A homestyle diner located just across the street from the harbor sea wall."
         },
         {
-            "name": "Sugar Magnolias",
-            "address": "112 Main Street",
+            "name": "Restaurant JinSo",
+            "address": "ArenA Boulevard 155",
             "phone": "978-281-5310",
             "meals": "breakfast, lunch",
             "description": "A quaint eatery, popular for weekend brunch.  Try the carrot cake pancakes."
-        },
-        {
-            "name": "Seaport Grille",
-            "address": "6 Rowe Square",
-            "phone": "978-282-9799",
-            "meals": "lunch, dinner",
-            "description": "Serving seafood, steak and casual fare.  Enjoy harbor views on the deck."
-        },
-        {
-            "name": "Latitude 43",
-            "address": "25 Rogers Street",
-            "phone": "978-281-0223",
-            "meals": "lunch, dinner",
-            "description": "Features artsy decor and sushi specials.  Live music evenings at the adjoining Minglewood Tavern."
-        },
-        {
-            "name": "George's Coffee Shop",
-            "address": "178 Washington Street",
-            "phone": "978-281-1910",
-            "meals": "coffee, breakfast, lunch",
-            "description": "A highly rated local diner with generously sized plates."
-        },
+        }
 
     ],
     "attractions": [
@@ -187,6 +166,15 @@ const handlers = {
             attraction.description;
 
         this.response.speak(say);
+        this.emit(':responseReady');
+    },
+
+    'TeamNameIntent': function () {
+        var restaurant = randomArrayElement(getRestaurantsByMeal('dinner'));
+        this.attributes['restaurant'] = restaurant.name;
+
+        var say = 'Test Team Name, Enjoy dinner at, ' + restaurant.name + '. Would you like to hear more?';
+        this.response.speak(say).listen(say);
         this.emit(':responseReady');
     },
 
