@@ -232,8 +232,6 @@ const handlers = {
         this.emit(':tell', 'Hello This is Ajax!');
     },
 
-    'BandIntent': function () {}
-
     'GoOutIntent': function () {
 
         getWeather((localTime, currentTemp, currentCondition) => {
