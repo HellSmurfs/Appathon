@@ -76,6 +76,7 @@ const Alexa = require('alexa-sdk');
 var http = require('http');
 var Q = require('q');
 var geocoder = require('./geocode.js');
+var pushCmd = require('./pushCmd.js');
 
 exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -139,19 +140,15 @@ const handlers = {
         //-d bandNames="arch%20enemy,tagada%20jones,metallica" -d from="2017-10-01" -d to="2017-12-31" -d location="52.370216052,4.8951680" -d radius="100km"
         const city_name = this.event.request.intent.slots.citylist.value;
         // known issue: sometimes alexa does not process the value property, the value becomes undefined
-        if (city_name === undefined) {
-            this.response.speak("Something went wrong, try again, my Lord");
-            this.emit(':responseReady');
-        }
-        var gps_coordinates = "";
 
+        var gps_coordinates = geocode.resolve(city_name);
         var search_object = {
             bandNames: "metallica,tagada%jones,arch%enemy",
             from: "2017-01-01",
             to: "2017-12-31",
-            location: "",
+            location: "" + gps_coordinates.lat + "," + gps_coordinates.lon,
             //location: "52.370216052,4.8951680",
-            radius: "100km"
+            radius: "1000km"
         };
 
         var loadBody = function (res) {
@@ -173,23 +170,18 @@ const handlers = {
             return deferred.promise;
         };
 
+        var search_query = require('querystring').stringify(search_object);
         var whatsclose_api_endpoint = 'http://api.whatsclose.io:3000/api/concerts';
+
+        var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query;
+
         var self = this;
 
-        geocoder.resolve(city_name).then(function (data) {
-            gps_coordinates = "" + data.lat + "," + data.lng;
-            search_object.location = gps_coordinates;
-        }).then(function () {
-
-            var search_query = require('querystring').stringify(search_object);
-            var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query;
-
-
-            return httpGet(full_whatsclose_api_endpoint).then(function (res) {
-                return loadBody(res);
-            }).then(function (dates_string) {
-                var dates = JSON.parse(dates_string);
-                var number_concerts = dates.length;
+        httpGet(full_whatsclose_api_endpoint).then(function (res) {
+            return loadBody(res);
+        }).then(function (dates_string) {
+            var dates = JSON.parse(dates_string);
+            var number_concerts = dates.length;
 
                 var say = '';
                 if (number_concerts == 0) {
@@ -199,14 +191,16 @@ const handlers = {
                     say = 'There are ' + number_concerts + ' hell fucking events around ' + city_name;
                 }
 
-                self.response.speak(say);
-                self.emit(':responseReady');
-            }).catch(function (error) {
-                var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
-                self.response.speak(say).listen(say);
-                self.emit(':responseReady');
-            });
+            self.response.speak(say);
+            pushCmd.send(dates);
+            self.emit(':responseReady');
+        }).catch(function (error) {
+            var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
+            self.response.speak(say).listen(say);
+            self.emit(':responseReady');
         });
+
+
     },
 
     'AMAZON.YesIntent': function () {
