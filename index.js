@@ -140,12 +140,13 @@ const handlers = {
         const city_name = this.event.request.intent.slots.citylist.value;
         // known issue: sometimes alexa does not process the value property, the value becomes undefined
 
-        var gps_coordinates = geocode.resolve(city_name);
+        var gps_coordinates = "";
+
         var search_object = {
             bandNames: "metallica,tagada%jones,arch%enemy",
             from: "2017-01-01",
             to: "2017-12-31",
-            location: "" + gps_coordinates.lat + "," + gps_coordinates.lon,
+            location: "",
             //location: "52.370216052,4.8951680",
             radius: "1000km"
         };
@@ -169,36 +170,40 @@ const handlers = {
             return deferred.promise;
         };
 
-        var search_query = require('querystring').stringify(search_object);
         var whatsclose_api_endpoint = 'http://api.whatsclose.io:3000/api/concerts';
-
-        var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query;
-
         var self = this;
 
-        httpGet(full_whatsclose_api_endpoint).then(function (res) {
-            return loadBody(res);
-        }).then(function (dates_string) {
-            var dates = JSON.parse(dates_string);
-            var number_concerts = dates.length;
+        geocoder.resolve(city_name).then(function(data) {
+            gps_coordinates = "" + data.lat + "," + data.lng;
+            search_object.location = gps_coordinates;
+        }).then(function() {
 
-            var say = '';
-            if (number_concerts == 0) {
-                say = 'Where do you live dude? Nothing around you.';
+            var search_query = require('querystring').stringify(search_object);
+            var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query;
+
+
+            return httpGet(full_whatsclose_api_endpoint).then(function (res) {
+                return loadBody(res);
+            }).then(function (dates_string) {
+                var dates = JSON.parse(dates_string);
+                var number_concerts = dates.length;
+
+                var say = '';
+                if (number_concerts == 0) {
+                    say = 'Where do you live dude? Nothing around you.';
+                    self.response.speak(say).listen(say);
+                } else {
+                    say = 'There are ' + number_concerts + ' hell fucking events around ' + city_name;
+                }
+
+                self.response.speak(say);
+                self.emit(':responseReady');
+            }).catch(function (error) {
+                var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
                 self.response.speak(say).listen(say);
-            } else {
-                say = 'There are ' + number_concerts + ' hell fucking events around ' + city_name;
-            }
-
-            self.response.speak(say);
-            self.emit(':responseReady');
-        }).catch(function (error) {
-            var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
-            self.response.speak(say).listen(say);
-            self.emit(':responseReady');
+                self.emit(':responseReady');
+            });
         });
-
-
     },
 
     'AMAZON.YesIntent': function () {

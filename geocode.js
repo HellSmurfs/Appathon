@@ -9,7 +9,7 @@ var searchGeometry = function (location) {
 
         try {
 	          if (data.status === 'OK') {
-                deferred.resolve (data);
+                deferred.resolve(data.results[0].geometry.location);
 	          }
             else if (data.status === 'ZERO_RESULTS') {
                 deferred.resolve(data);
@@ -46,6 +46,6 @@ var searchGeometryWithRetry = function(location, retry, max_retries) {
 };
 
 
-module.export = {
+module.exports = {
     resolve: searchGeometryWithRetry
 };
