@@ -73,6 +73,8 @@ const myAPI = {
 // 2. Skill Code =======================================================================================================
 
 const Alexa = require('alexa-sdk');
+var http = require('http');
+var Q = require('q');
 
 exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -133,7 +135,59 @@ const handlers = {
     },
 
     'BandIntent': function () {
-        // do the query here  
+        //-d bandNames="arch%20enemy,tagada%20jones,metallica" -d from="2017-10-01" -d to="2017-12-31" -d location="52.370216052,4.8951680" -d radius="100km"
+        var search_object = {
+            bandNames: "metallica,tagada%jones,arch%enemy",
+            from: "2017-01-01",
+            to: "2017-12-31",
+            location: "52.370216052,4.8951680",
+            radius: "1000km"
+        };
+
+        var loadBody = function (res) {
+            var deferred = Q.defer();
+            var data = '';
+            res.on('data', function (chunk) {
+                data += chunk;
+            });
+            res.on('end', function () {
+                deferred.resolve(data);
+            });
+            return deferred.promise;
+        };
+
+        var httpGet = function (opts) {
+            var deferred = Q.defer();
+            http.get(opts, deferred.resolve).on('error', deferred.reject);
+
+            return deferred.promise;
+        };
+
+        var search_query = require('querystring').stringify(search_object);
+        var whatsclose_api_endpoint = 'http://api.whatsclose.io:3000/api/concerts';
+
+        var full_whatsclose_api_endpoint = whatsclose_api_endpoint + '?' + search_query; 
+        httpGet(full_whatsclose_api_endpoint).then({
+            return loadBody(res);
+        }).then(function(dates) {
+            var number_concerts = dates.length;
+
+            var say = '';
+            if (number_concerts == 0) {
+                say = 'Where do you live dude? Nothing around you.';
+                this.response.speak(say).listen(say);
+            }
+            else {
+                say = 'There are ' + number_concerts + ' hell fucking events around you.';
+            }
+
+            this.response.speak(say).listen(say);
+        }).catch(function(error) {
+            var say = 'Something went wrong .... I am so sorry master to not be able to complete your request.';
+            this.response.speak(say).listen(say);
+        });
+
+
     },
 
     'AMAZON.YesIntent': function () {
