@@ -1,5 +1,4 @@
 var Q = require('q');
-var winston = require('winston');
 var geocoder = require('geocoder');
 
 var searchGeometry = function (location) {
@@ -16,8 +15,8 @@ var searchGeometry = function (location) {
                 deferred.resolve(data);
             }
 	          else {
-                winston.error(data.status);
-                winston.info ('ERROR received. ' + data.status + ' Retry in progress');
+                console.log(data.status);
+                console.log('ERROR received. ' + data.status + ' Retry in progress');
                 deferred.reject(Error (location));
 	          }
         }
