@@ -148,7 +148,7 @@ const handlers = {
             to: "2017-12-31",
             location: "",
             //location: "52.370216052,4.8951680",
-            radius: "1000km"
+            radius: "100km"
         };
 
         var loadBody = function (res) {
