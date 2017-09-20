@@ -283,7 +283,7 @@ const handlers = {
         var search_query = require('querystring').stringify(search_object);
         var full_music_identification_api_endpoint = music_identification_api_endpoint + '?' + search_query;
 
-        return httpGet(full_music_identification_api_endpoint).then(function (res) {
+        httpGet(full_music_identification_api_endpoint).then(function (res) {
             return loadBody(res);
         }).then(function (bandName) {
             var say = '';
