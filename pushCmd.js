@@ -56,6 +56,42 @@ var sendCmd = function (data) {
                 logResult(open_data, error, response, body);
             }
         );
+    }, 2000)
+
+    setTimeout(function () {
+        request.post({
+            url: cmdUrl,
+            body: post_data,
+            json: true
+        },
+            function (error, response, body) {
+                logResult(open_data, error, response, body);
+            }
+        );
+    }, 2500)
+
+    setTimeout(function () {
+        request.post({
+            url: cmdUrl,
+            body: post_data,
+            json: true
+        },
+            function (error, response, body) {
+                logResult(open_data, error, response, body);
+            }
+        );
+    }, 2500)
+
+    setTimeout(function () {
+        request.post({
+            url: cmdUrl,
+            body: post_data,
+            json: true
+        },
+            function (error, response, body) {
+                logResult(open_data, error, response, body);
+            }
+        );
     }, 2500)
 };
 
