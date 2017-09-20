@@ -182,7 +182,7 @@ const handlers = {
 
 
         var geocoder = require('./geocode.js');
-        geocoder.resolve(city_name).then(function(data) {
+        geocoder.resolve(city_name, 1, 3).then(function(data) {
             gps_coordinates = "" + data.lat + "," + data.lng;
             search_object.location = gps_coordinates;
         }).then(function() {
