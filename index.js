@@ -254,8 +254,8 @@ const handlers = {
     },
 
     'SmurfIntent': function() {
-
-        var loadBody = function (res) {
+        console.log("smurf started");
+        var _loadBody = function (res) {
             var deferred = Q.defer();
             var data = '';
             res.on('data', function (chunk) {
@@ -267,14 +267,15 @@ const handlers = {
             return deferred.promise;
         };
 
-        var httpGet = function (opts) {
+        var _httpGet = function (opts) {
+            console.log("options are:" + opts);
             var deferred = Q.defer();
             http.get(opts, deferred.resolve).on('error', deferred.reject);
 
             return deferred.promise;
         };
 
-        var music_identification_api_endpoint = 'http://api.whatsclose.io:6666/';
+        var music_identification_api_endpoint = 'http://api.whatsclose.io:8080/api/nest/identification';
 
         var search_object = {
             stream_url: "https://stream-ire-bravo.dropcam.com/nexus_aac/018e9b0cea844b5c9cc8ced5d324814b/index.m3u8"
@@ -284,25 +285,28 @@ const handlers = {
 
         var search_query = require('querystring').stringify(search_object);
         var full_music_identification_api_endpoint = music_identification_api_endpoint + '?' + search_query;
-
-        httpGet(full_music_identification_api_endpoint).then(function (res) {
-            return loadBody(res);
-        }).then(function (bandName) {
+        console.log("ready to send request");
+        _httpGet(full_music_identification_api_endpoint).then(function (res) {
+            return _loadBody(res);
+        }).then(function (data) {
             var say = '';
-
-            if (bandName === "")
+            
+            var data_as_json = JSON.parse(data);
+            console.log("ready to log data");
+            console.dir(data);
+            if ((data_as_json.bandName === undefined ) || (data_as_json.bandName === "" ))
                 say = "Master, I miserably failed";
             else
-                say = "Master, your sound is " + bandName;
+                say = "Master, your sound is " + data_as_json.bandName;
 
-            this.response.speak(say);
-            this.emit(':responseReady');
+            self.response.speak(say);
+            self.emit(':responseReady');
 
         }).catch(function(error) {
             var say = 'Something went wrong when trying to contact music recognition service.';
 
-            this.response.speak(say);
-            this.emit(':responseReady');
+            self.response.speak(say);
+            self.emit(':responseReady');
         });
 
     },
