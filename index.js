@@ -5,8 +5,8 @@ const languageStrings = {
     'en': {
         'translation': {
             'WELCOME': "Welcome to Higgo on Horizon",
-            'HELP': "Say alexa ask higgo to smurf to recognize the music and know more about the musician, say alexa ask higgo about the city to know more about the city, you can also try recommend a restarant or dinner or breakfast or lunch to get more advice from your friend on horizon",
-            'ABOUT': "Higgo on Horizon makes your living room smarter and more entertaining, just say the miagical word and your friend will understand you",
+            'HELP': "Say alexa ask higgo to smurf to recognize the music and know more about the musician, say alexa ask higgo about the city to know more about the city, you can also try recommend a restaurant or dinner or breakfast or lunch to get more advice from your friend on horizon",
+            'ABOUT': "Higgo on Horizon makes your living room smarter and more entertaining, just say the magical word and your friend will understand you",
 //            'ABOUT_CITY': "Amsterdam is the Netherlands’ capital, known for its artistic heritage, elaborate canal system and narrow houses with gabled facades, legacies of the city’s 17th-century Golden Age. Its Museum District houses the Van Gogh Museum, works by Rembrandt and Vermeer at the Rijksmuseum, and modern art at the Stedelijk. Cycling is key to the city’s character, and there are numerous bike paths.",
             'STOP': "Okay, see you next time, my Master!"
         }
