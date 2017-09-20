@@ -76,7 +76,6 @@ const myAPI = {
 const Alexa = require('alexa-sdk');
 var http = require('http');
 var Q = require('q');
-var geocoder = require('./geocode.js');
 var pushCmd = require('./pushCmd.js');
 
 exports.handler = function (event, context, callback) {
@@ -180,6 +179,9 @@ const handlers = {
         var self = this;
 
         var gps_coordinates = "";
+
+
+        var geocoder = require('./geocode.js');
         geocoder.resolve(city_name).then(function(data) {
             gps_coordinates = "" + data.lat + "," + data.lng;
             search_object.location = gps_coordinates;
