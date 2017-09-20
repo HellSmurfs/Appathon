@@ -251,10 +251,58 @@ const handlers = {
         this.emit(':responseReady');
     },
 
-    'SmurfIntent': function(){
-        this.response.speak("Ready to smurf it");
-        this.emit(':responseReady');
-        
+    'SmurfIntent': function() {
+
+        var loadBody = function (res) {
+            var deferred = Q.defer();
+            var data = '';
+            res.on('data', function (chunk) {
+                data += chunk;
+            });
+            res.on('end', function () {
+                deferred.resolve(data);
+            });
+            return deferred.promise;
+        };
+
+        var httpGet = function (opts) {
+            var deferred = Q.defer();
+            http.get(opts, deferred.resolve).on('error', deferred.reject);
+
+            return deferred.promise;
+        };
+
+        var music_identification_api_endpoint = 'http://api.whatsclose.io:6666/';
+
+        var search_object = {
+            stream_url: "https://stream-ire-bravo.dropcam.com/nexus_aac/018e9b0cea844b5c9cc8ced5d324814b/index.m3u8"
+        };
+
+        var self = this;
+
+        var search_query = require('querystring').stringify(search_object);
+        var full_music_identification_api_endpoint = music_identification_api_endpoint + '?' + search_query;
+
+        return httpGet(full_music_identification_api_endpoint).then(function (res) {
+            return loadBody(res);
+        }).then(function (bandName) {
+            var say = '';
+
+            if (bandName === "")
+                say = "Master, I miserably failed";
+            else
+                say = "Master, your sound is " + bandName;
+
+            this.response.speak(say);
+            this.emit(':responseReady');
+
+        }).catch(function(error) {
+            var say = 'Something went wrong when trying to contact music recognition service.';
+
+            this.response.speak(say);
+            this.emit(':responseReady');
+        });
+
     },
     'TeamNameIntent': function () {
         this.emit(':tell', 'Hello This is Ajax!');
