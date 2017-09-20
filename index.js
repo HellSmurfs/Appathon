@@ -4,10 +4,11 @@
 const languageStrings = {
     'en': {
         'translation': {
-            'WELCOME': "Welcome to Amsterdam",
-            'HELP': "Say about, to hear more about the city, or say coffee, breakfast, lunch, or dinner, to hear local restaurant suggestions, or say recommend an attraction.",
-            'ABOUT': "Amsterdam is the Netherlands’ capital, known for its artistic heritage, elaborate canal system and narrow houses with gabled facades, legacies of the city’s 17th-century Golden Age. Its Museum District houses the Van Gogh Museum, works by Rembrandt and Vermeer at the Rijksmuseum, and modern art at the Stedelijk. Cycling is key to the city’s character, and there are numerous bike paths.",
-            'STOP': "Okay, see you next time, my Lord!"
+            'WELCOME': "Welcome to Higgo on Horizon",
+            'HELP': "Say alexa ask higgo to smurf to recognize the music and know more about the musician, say alexa ask higgo about the city to know more about the city, you can also try recommend a restarant or dinner or breakfast or lunch to get more advice from your friend on horizon",
+            'ABOUT': "Higgo on Horizon makes your living room smarter and more entertaining, just say the miagical word and your friend will understand you",
+            'ABOUT_CITY': "Amsterdam is the Netherlands’ capital, known for its artistic heritage, elaborate canal system and narrow houses with gabled facades, legacies of the city’s 17th-century Golden Age. Its Museum District houses the Van Gogh Museum, works by Rembrandt and Vermeer at the Rijksmuseum, and modern art at the Stedelijk. Cycling is key to the city’s character, and there are numerous bike paths.",
+            'STOP': "Okay, see you next time, my Master!"
         }
     }
     // , 'de-DE': { 'translation' : { 'TITLE'   : "Local Helfer etc." } }
@@ -59,7 +60,7 @@ const data = {
     ]
 }
 
-const SKILL_NAME = "Amsterdam Guide";
+const SKILL_NAME = "Higgo";
 
 // Weather courtesy of the Yahoo Weather API.
 // This free API recommends no more than 2000 calls per day
@@ -96,7 +97,7 @@ const handlers = {
     },
 
     'AboutIntent': function () {
-        this.response.speak(this.t('ABOUT'));
+        this.response.speak(this.t('ABOUT') + ' ' + this.t.('HELP'));
         this.emit(':responseReady');
     },
 
@@ -143,7 +144,7 @@ const handlers = {
         const city_name = this.event.request.intent.slots.citylist.value;
         // known issue: sometimes alexa does not process the value property, the value becomes undefined
         if (city_name === undefined) {
-            this.response.speak("Something went wrong, try again, my Lord");
+            this.response.speak("Something went wrong, try again, my Master");
             this.emit(':responseReady');
         }
         var search_object = {
